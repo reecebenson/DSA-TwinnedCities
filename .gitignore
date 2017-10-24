@@ -1,0 +1,6 @@
+ # Configuration File
+configuration.php
+
+# Ignore anything within .vscode
+.vscode/*
+sftp.json
