@@ -1,6 +1,6 @@
 # DSA - Twinned Cities
 
-This is an implementation of the Twinned Cities for Data Schemas and Applications at the University of the West of England.
+This is an implementation of the Twinned Cities for Data, Schemas and Applications at the University of the West of England.
 
 # Overview
 #### Learning Objectives:
