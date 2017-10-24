@@ -8,7 +8,7 @@
 	<head>
 		<title>Homepage | <?=$site->getSystemInfo("site_name_long");?></title>
 
-		<link href="<?=$www;?>/gallery/css/main.css" type="text/css" rel="stylesheet">
+		<?php require_once('pages/header.php'); ?>
 	</head>
 	<body>
 		<div class="container">
@@ -25,5 +25,6 @@
 				<?php require_once('pages/footer.php'); ?>
 			</div>
 		</div>
+		<?php require_once('pages/scripts.php'); ?>
 	</body>
 </html>
