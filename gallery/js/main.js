@@ -14,7 +14,9 @@ var eInput = $("#fPlace");
 
 // > Content Elements
 var cPlaces = $("#contentPlaces");
+var cPlacesTitle = $("#contentPlacesTitle");
 var cPlacesData = $("#contentPlacesData");
+var cPlaceData = $("#placeData");
 var cWarning = $("#warning");
 var cWarningTxt = $("#warningMsg");
 
@@ -24,6 +26,7 @@ const displayWarning = (errText) => {
 }
 
 const hideElements = () => {
+    if(curSearch === eInput.val()) return;
     cWarning.slideUp();
     cPlaces.slideUp();
 }
@@ -37,7 +40,7 @@ const findData = () => {
         return displayWarning("Please enter a valid search term!");
 
     // > Slide our content into view
-    cPlacesData.html("Searching for places related to '<em>" + curSearch + "</em>'...<br/><br/><img src=\"" + imgLoader + "\" alt=\"Loading...\">");
+    cPlacesData.html("<br/>Searching for places related to '<em>" + curSearch + "</em>'...<br/><br/><img src=\"" + imgLoader + "\" alt=\"Loading...\"><br/><br/>");
     cPlaces.slideDown();
 
     // > Log (debug)
@@ -46,6 +49,7 @@ const findData = () => {
     $.ajax({
         method: 'POST',
         dataType: 'json',
+        context: $("#contentPlacesData > tbody > tr"),
         url: './data/fetchPlaces.php',
         data: { name: curSearch },
         error: () => {
@@ -53,14 +57,22 @@ const findData = () => {
             return displayWarning("There was an error fetching your request!");
         },
         success: (result) => {
+            cPlacesTitle.html("Places <small>(" + result['resp_json']['count'] + " matches for '" + curSearch + "')</small>");
             cPlacesData.html(result['resp_html']);
+            $("#contentPlacesData > tbody > tr").click(function() {
+                loadTableRowData($(this));
+            });
         }
     });
 };
 
+const loadTableRowData = (row) => {
+    console.log(row.data()['woeid']);
+};
+
 base.ready(() => {
     // > Allocate our 'click' for our search form
-    eSearch.on('click', findData);
+    eSearch.on('click', () => { hideElements(); findData(); });
     eForm.on('input', 'input', hideElements);
 
     // > Override what happens when the user submits the form
@@ -70,6 +82,7 @@ base.ready(() => {
         e.preventDefault();
 
         // > Perform what clicking 'eSearch' would do
+        hideElements();
         findData();
     });
 

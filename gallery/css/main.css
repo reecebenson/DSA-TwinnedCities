@@ -17,16 +17,12 @@ h3 {
 	font-size: 18px;
 }
 
-.container {
-    height: 100%;
-    display: flex;
+.container-fluid {
     justify-content: center;
 	align-items: center;
 	text-align: center;
-}
 
-.box-container {
-	width: 600px;
+	width: 85%;
 	margin: 0 auto;
 	margin-top: 6rem;
 }
@@ -52,6 +48,16 @@ h3 {
 	border-bottom: 1px solid #888;
 	padding-top: 10px;
 	padding-bottom: 10px;
+}
+
+th,td {
+	padding-top: 8px;
+	padding-bottom: 8px;
+}
+
+tbody > tr:hover {
+	background-color: rgba(128, 128, 128, 0.5);
+	cursor: pointer;
 }
 
 .nobottompadding {
