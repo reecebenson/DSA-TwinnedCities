@@ -24,7 +24,7 @@ h3 {
 
 	width: 85%;
 	margin: 0 auto;
-	margin-top: 6rem;
+	margin-top: 2rem;
 }
 
 .box {
@@ -32,7 +32,7 @@ h3 {
 	color: black;
 	border-radius: 5px;
 	padding: 10px;
-	margin-top: 4rem;
+	margin-top: 1.5rem;
 	box-shadow: 5px 5px 5px rgba(0, 0, 0, 0.5) !important;
 }
 
