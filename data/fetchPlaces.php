@@ -36,7 +36,10 @@
     $resp['resp_html'] .= "<tbody>";
     for($i = 0; $i < $resp['resp_json']['count']; $i++)
     {
-        $place = Places::formatPlace($resp['resp_json']['results']['place'][$i]);
+        if(isset($resp['resp_json']['results']['place'][$i]) && $resp['resp_json']['count'] != "1")
+            $place = Places::formatPlace($resp['resp_json']['results']['place'][$i]);
+        else
+            $place = Places::formatPlace($resp['resp_json']['results']['place']);
         $resp['places'][$i] = $place;
 
         // > Build our string

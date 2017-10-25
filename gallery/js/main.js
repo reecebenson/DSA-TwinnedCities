@@ -58,6 +58,8 @@ const findData = () => {
         method: 'POST',
         dataType: 'json',
         url: './data/fetchPlaces.php',
+        async: false,
+        timeout: 30000,
         data: { name: curSearch },
         error: () => {
             hideElements();
@@ -86,6 +88,8 @@ const loadTableRowData = (row) => {
         method: 'POST',
         dataType: 'json',
         url: './data/fetchPlace.php',
+        async: false,
+        timeout: 30000,
         data: { woeid: row.data()["woeid"] },
         error: () => {
             cPlaceData.html("<br/>There was an issue trying to fetch the data.<br/>");
