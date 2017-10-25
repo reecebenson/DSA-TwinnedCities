@@ -2,8 +2,10 @@
 
     class Places {
         private static $yahooBase = "http://query.yahooapis.com/v1/public/yql";
+        private static $openWeatherMap = "http://api.openweathermap.org/data/2.5";
+        private static $openWeatherMapKey = "cf7dbec75e0be30c47d8eba673d6b068";
         
-        public static function query($qry) {
+        public static function queryYahoo($qry) {
             // > Build URL Request
             $args = array(
                 'q' => $qry,
@@ -15,9 +17,34 @@
             $data = json_decode(file_get_contents($qryUrl), true);
             return $data;
         }
-
+        
         public static function queryPlaces($place) {
-            return self::query("SELECT * FROM geo.places WHERE text = \"" . $place . "\"");
+            return self::queryYahoo("SELECT * FROM geo.places WHERE text = \"" . $place . "\"");
+        }
+                
+        public static function queryPlaceByWOEID($id) {
+            return self::queryYahoo("SELECT * FROM geo.places WHERE woeid = \"" . $id . "\"");
+        }
+
+        public static function queryOpenWeatherMap($apiType, $args)
+        {
+            $qryUrl = self::$openWeatherMap . "/" . $apiType . "?" . $args;
+            $data = json_decode(file_get_contents($qryUrl), true);
+            return $data;
+        }
+
+        public static function queryPlaceWeather($lat, $long) {
+            $args = array(
+                "APPID" => self::$openWeatherMapKey,
+                "lat" => $lat,
+                "lon" => $long
+            );
+            return self::queryOpenWeatherMap("weather", http_build_query($args));
+        }
+
+        public static function getCompassFromDegree($d) {
+			$dirs = array('N', 'NE', 'E', 'SE', 'S', 'SW', 'W', 'NW', 'N'); 
+			return $dirs[round($d/45)];
         }
 
         public static function formatPlace($data) {
@@ -41,7 +68,7 @@
                     "name" => $data['admin1']['content'],
                     "woe_id" => $data['admin1']['woeid']
                 );
-            } else $place['state'] = array("name" => "<em>undefined</em>", "woe_id" => 0);
+            } else $place['state'] = array("name" => "<em>undefined state</em>", "woe_id" => 0);
 
             // -> County/Area/LGA
             if(!is_null($data['admin2'])) {
@@ -49,7 +76,7 @@
                     "name" => $data['admin2']['content'],
                     "woe_id" => $data['admin2']['woeid']
                 );
-            } else $place['county'] = array("name" => "<em>undefined</em>", "woe_id" => 0);
+            } else $place['county'] = array("name" => "<em>undefined county</em>", "woe_id" => 0);
 
             // -> Postcode / ZIP
             if(!is_null($data['postal'])) {
@@ -58,7 +85,7 @@
                     "woe_id" => $data['postal']['woeid'],
                     "classifier" => $data['postal']['type']
                 );
-            } else $place['postcode'] = array("name" => "<em>undefined</em>", "woe_id" => 0, "classifier" => null);
+            } else $place['postcode'] = array("name" => "<em>undefined postcode</em>", "woe_id" => 0, "classifier" => null);
 
             // -> Central Lat/Long
             if(!is_null($data['centroid'])) {
@@ -74,7 +101,7 @@
                     "name" => $data['timezone']['content'],
                     "woe_id" => $data['timezone']['woeid']
                 );
-            } else $place['timezone'] = array("name" => "<em>undefined</em>", "woe_id" => 0);
+            } else $place['timezone'] = array("name" => "<em>undefined timezone</em>", "woe_id" => 0);
 
             // > Return our place
             return $place;

@@ -16,9 +16,13 @@ var eInput = $("#fPlace");
 var cPlaces = $("#contentPlaces");
 var cPlacesTitle = $("#contentPlacesTitle");
 var cPlacesData = $("#contentPlacesData");
-var cPlaceData = $("#placeData");
 var cWarning = $("#warning");
 var cWarningTxt = $("#warningMsg");
+
+// > Content Elements for Place
+var cPlaceData = $("#placeData");
+var cPlaceWeather = $("#placeWeather");
+var cPlaceTweets = $("#placeTweets");
 
 const displayWarning = (errText) => {
     cWarningTxt.html(errText);
@@ -49,7 +53,6 @@ const findData = () => {
     $.ajax({
         method: 'POST',
         dataType: 'json',
-        context: $("#contentPlacesData > tbody > tr"),
         url: './data/fetchPlaces.php',
         data: { name: curSearch },
         error: () => {
@@ -67,7 +70,33 @@ const findData = () => {
 };
 
 const loadTableRowData = (row) => {
-    console.log(row.data()['woeid']);
+    console.log(row.data()["woeid"]);
+
+    // > Start Process
+    cPlaceData.html("<br/>Looking up data...</br><br/><img src=\"" + imgLoader + "\" alt=\"Loading...\"><br/><br/>");
+    cPlaceWeather.html("<br/>Looking up data...</br><br/><img src=\"" + imgLoader + "\" alt=\"Loading...\"><br/><br/>");
+    cPlaceTweets.html("<br/>Looking up data...</br><br/><img src=\"" + imgLoader + "\" alt=\"Loading...\"><br/><br/>");
+
+    // > Processes
+    $.ajax({
+        method: 'POST',
+        dataType: 'json',
+        url: './data/fetchPlace.php',
+        data: { woeid: row.data()["woeid"] },
+        error: () => {
+            cPlaceData.html("<br/>There was an issue trying to fetch the data.<br/>");
+        },
+        success: (result) => {
+            // - Data
+            cPlaceData.html(result['resp_details']);
+
+            // - Weather
+            cPlaceWeather.html(result['resp_weather']);
+
+            // - Tweets
+            cPlaceTweets.html(result['resp_tweets']);
+        }
+    });
 };
 
 base.ready(() => {

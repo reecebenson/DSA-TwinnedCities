@@ -48,13 +48,31 @@
 					<?php require_once('pages/footer.php'); ?>
 				</div>
 				<div class="col-lg-3">
-					<h1>Place Information</h1>
+					<h1>Information</h1>
 
 					<div class="box first">
 						<div class="title">
-							<h3>Place Information</h3>
+							<h3>Details</h3>
 						</div>
 						<div class="content last" id="placeData">
+							Click on a location to load some data here!
+						</div>
+					</div>
+
+					<div class="box">
+						<div class="title">
+							<h3>Weather</h3>
+						</div>
+						<div class="content last" id="placeWeather">
+							Click on a location to load some data here!
+						</div>
+					</div>
+
+					<div class="box">
+						<div class="title">
+							<h3>Tweets</h3>
+						</div>
+						<div class="content last" id="placeTweets">
 							Click on a location to load some data here!
 						</div>
 					</div>

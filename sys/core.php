@@ -6,6 +6,9 @@
 	require_once('classes/weather.php');
 	require_once('classes/places.php');
 
+	// > Set our timezone (dependant on platform, so we should always set it)
+	date_default_timezone_set("Europe/London");
+
 	// > Initialise our database
 	$db = new MySQLi($db_details['host'], $db_details['user'], $db_details['pass'], $db_details['name']);
 	if(!$db)
