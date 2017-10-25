@@ -35,6 +35,10 @@ const hideElements = () => {
     cPlaces.slideUp();
 }
 
+//TODO: Error fetching requests. Waiting until a response has been delivered before hitting the error.
+//      -- caused by bad internet connection. Maybe using a promise and separating the ajax error/success
+//      -- will fix this.
+
 const findData = () => {
     // > Update our data variables
     curSearch = eInput.val();
