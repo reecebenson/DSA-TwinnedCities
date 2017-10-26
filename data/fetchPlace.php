@@ -74,14 +74,15 @@
     foreach($resp['resp_twitter_raw']['statuses'] as $tweet)
     {
         // > Only print out solid tweets with no replies or retweets
+        $timestamp = strtotime($tweet['created_at']);
         if(!$tweet['retweeted'] && count($tweet['entities']['user_mentions']) == 0)
         {
             $resp['resp_tweets'] .= '<div class="row">
-                <div class="col-sm-4">
+                <div class="col-sm-2">
                     <img src="' . $tweet['user']['profile_image_url'] . '" style="width: 32px; height: 32px; border-radius: 8px;">
                 </div>
-                <div class="col-sm-5" style="padding: 5px;">
-                    <strong>@' . $tweet['user']['screen_name'] . '</strong>
+                <div class="col-sm-8" style="padding: 5px;">
+                    <strong>@' . $tweet['user']['screen_name'] . '</strong> <small>(' . $site->timeago($timestamp) . ')</small>
                 </div>
             </div>
             <div class="row">
