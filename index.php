@@ -1,6 +1,10 @@
 <?php
 	/* Reece Benson */
 	/* BSc Comp Sci */
+
+	/**
+	 * Requirements
+	 */
 	require_once('sys/core.php');
 ?>
 <!DOCTYPE html>

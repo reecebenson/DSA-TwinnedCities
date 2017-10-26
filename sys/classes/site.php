@@ -1,11 +1,29 @@
 <?php
 	/* Reece Benson */
 	/* BSc Comp Sci */
+
+	/**
+	 * Class Site
+	 *
+	 * PHP version 5.3.10
+	 *
+	 * @author   Reece Benson, Lewis Cummins, Devon ?
+	 * @license  MIT License
+	 * @link     http://github.com/reecebenson/dsa-twinnedcities/
+	 */
+
+	 
 	class Site
 	{
-		// > Variables
+		/**
+		 * Holds data from the `system_information` table as cache
+		 * @var string
+		 */
 		private $sys_info;
 
+		/**
+		 * Instantiates the $sys_info variable
+		 */
 		function __construct()
 		{
 			global $db;
@@ -22,11 +40,26 @@
 			}
 		}
 
+		/**
+		 * Grab some information out of the $sys_info variable
+		 *
+		 * @param string $name The name of the setting to retrieve
+		 *
+		 * @return string The value of the setting specified
+		 */
 		public function getSystemInfo($name)
 		{
 			return $this->sys_info[$name];
 		}
 
+		/**
+		 * Convert a unix timestamp into a readable "time ago" format:
+		 * 'just now', 'x seconds ago', 'x minutes ago', etc...
+		 *
+		 * @param int $ptime A unix timestamp
+		 *
+		 * @return string The "time ago" string
+		 */
 		public function timeago($ptime) {
 			$etime = time() - $ptime;
 

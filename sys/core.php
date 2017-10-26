@@ -1,25 +1,42 @@
 <?php
 	/* Reece Benson */
 	/* BSc Comp Sci */
+
+	/**
+	 * Configuration File
+	 */
 	require_once('configuration.php');
+
+	/**
+	 * Class Requirements
+	 */
 	require_once('classes/site.php');
 	require_once('classes/places.php');
+	require_once('classes/twitter.php');
 
-	// > Set our timezone (dependant on platform, so we should always set it)
+	/**
+	 * Set our timezone (dependant on platform, so we should always set it)
+	 */
 	date_default_timezone_set("Europe/London");
 
-	// > Initialise our database
+	/**
+	 * Initialise our database
+	 * 
+	 * @throws If Error - kills the web page and displays the MySQL Error
+	 */
 	$db = new MySQLi($db_details['host'], $db_details['user'], $db_details['pass'], $db_details['name']);
 	if(!$db)
 	{
-		// > Error connecting
-		die('Error connecting to database: ' . mysql_error());
+		die('Error connecting to database: ' . mysqli_error());
 	}
 
-	// > Initialise our class
+	/**
+	 * Initialise our Site class
+	 */
 	$site = new Site();
+	
+	/**
+	 * Define our website URL variable (which is accessible to every file)
+	 */
 	$www  = "http://uwe.reecebenson.me/dsa-twincities";
-
-	// > Twitter Authentication
-	require_once('classes/twitter.php');
 ?>
