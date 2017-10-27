@@ -1,44 +1,88 @@
-// > Variables
+/**
+ * Default Variables
+ * 
+ * @param Object
+ * @param Object
+ * @param Bool
+ */
 var $ = jQuery;
 var base = $(document);
 var debug = true;
 
-// > Data Variables
+/**
+ * Data Variables
+ * 
+ * @param {*} imgLoader URL for the loading image
+ * @param {*} curSearch 
+ */
 var imgLoader = "./gallery/img/load.gif";
 var curSearch = undefined;
 
-// > Elements
+/**
+ * Elements
+ * 
+ * @param {*} eForm      The form HTML element
+ * @param {*} eSearch    The form Search button
+ * @param {*} eInput     The input field
+ */
 var eForm = $('form[name="fForm"]');
 var eSearch = $("#fSearch");
 var eInput = $("#fPlace");
 
-// > Content Elements
+/**
+ * Content Elements
+ * 
+ * @param {*} cPlaces        DIV for Places
+ * @param {*} cPlacesTitle   DIV for Place Title
+ * @param {*} cPlacesData    DIV for Places Data
+ * @param {*} cWarning       DIV for display warnings
+ * @param {*} cWarningTxt    SPAN for warning text
+ * @param {*} cPlaceData     DIV for Place Data (information)
+ * @param {*} cPlaceWeather  DIV for Place Weather (information)
+ * @param {*} cPlaceTweets   DIV for Place Tweets (information)
+ */
 var cPlaces = $("#contentPlaces");
 var cPlacesTitle = $("#contentPlacesTitle");
 var cPlacesData = $("#contentPlacesData");
 var cWarning = $("#warning");
 var cWarningTxt = $("#warningMsg");
-
-// > Content Elements for Place
 var cPlaceData = $("#placeData");
 var cPlaceWeather = $("#placeWeather");
 var cPlaceTweets = $("#placeTweets");
 
+/**
+ * Display Warning to User through an alert
+ * @param {*} errText The Error text to show to the user
+ */
 const displayWarning = (errText) => {
     cWarningTxt.html(errText);
     cWarning.slideDown();
 }
 
+/**
+ * Hide the warning element and the current places
+ * - Used when the user starts typing again
+ */
 const hideElements = () => {
     if(curSearch === eInput.val()) return;
     cWarning.slideUp();
     cPlaces.slideUp();
 }
 
-//TODO: Error fetching requests. Waiting until a response has been delivered before hitting the error.
-//      -- caused by bad internet connection. Maybe using a promise and separating the ajax error/success
-//      -- will fix this.
-
+/**
+ * Start the process for requesting data for what the user
+ * has inputted. Calls are done via AJAX and data is posted
+ * to `/data/fetchPlaces.php` to grab the place data.
+ * 
+ * Each place is then assigned an onClick event which fires
+ * the `loadTableRowData()` function. Further docs about this
+ * are provided above and within that function.
+ * 
+ * findData() grabs the User's input and stores it into curSearch
+ * @param {String} curSearch  Stores the current search string (input from user)
+ * 
+ * //TODO
+ */
 const findData = () => {
     // > Update our data variables
     curSearch = eInput.val();

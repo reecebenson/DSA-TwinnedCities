@@ -1,4 +1,13 @@
 <?php
+	/**
+	 * Places
+	 *
+	 * PHP version 5.6.30
+	 *
+	 * @author   Reece Benson, Lewis Cummins, Devon Davies
+	 * @license  MIT License
+	 * @link     http://github.com/reecebenson/dsa-twinnedcities/
+	 */
 
     class Places {
 		/**
