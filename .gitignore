@@ -2,8 +2,8 @@
 configuration.php
 
 # Ignore anything within .vscode
-.vscode/*
-sftp.json
+# .vscode/*
+# sftp.json
 
 # Ignored folders
 **/_ignore
