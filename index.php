@@ -25,7 +25,7 @@
 		<div class="container-fluid">
 			<div class="row">
 				<div class="col-lg-9">
-					<h1>Reece Benson</h1>
+					<h1><?=$site->getSystemInfo("site_name_long");?></h1>
 
 					<div class="alert alert-warning first" id="warning" style="display: none;">
 						<b><i class="fa fa-warning"></i> Warning:</b> <span id="warningMsg"><em>error occurred</em></span>
@@ -33,7 +33,7 @@
 
 					<div class="box first">
 						<div class="title">
-							<h3><?=$site->getSystemInfo("site_name_long");?></h3>
+							<h3>Search for a City</h3>
 						</div>
 						<div class="content last">
 							<form name="fForm" id="fForm">
