@@ -1,5 +1,5 @@
  # Configuration File
-configuration.php
+#configuration.php
 
 # Ignore anything within .vscode
 .vscode/*

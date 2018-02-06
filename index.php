@@ -39,13 +39,15 @@
             <div class="row">
                 <div class="col-md" style="min-height: 200px; background-color: white; border-radius: 3px; margin: 5px; padding: 5px; text-align: center; font-weight: bold;">
                     <span style="font-size: 32px;"><?=$cities['city_one']['name'];?></span><br/>
-                    <span id="city_one_timezone">Loading...</span><br/>
-                    <span id="city_one_population">Population: <?=number_format($cities['city_one']['population']);?></span>
+                    <span id="city_one_timezone">Loading...</span><br/><br/>
+                    <span id="city_one_population">Population: <?=number_format($cities['city_one']['population']);?></span><br/>
+                    <span id="city_one_squareft">City Square ft.: <?=number_format($cities['city_one']['square_ft']);?>sqft</span>
                 </div>
                 <div class="col-md" style="min-height: 200px; background-color: white; border-radius: 3px; margin: 5px; padding: 5px; text-align: center; font-weight: bold;">
                     <span style="font-size: 32px;"><?=$cities['city_two']['name'];?></span><br/>
-                    <span id="city_two_timezone">Loading...</span><br/>
-                    <span id="city_two_population">Population: <?=number_format($cities['city_two']['population']);?></span>
+                    <span id="city_two_timezone">Loading...</span><br/><br/>
+                    <span id="city_two_population">Population: <?=number_format($cities['city_two']['population']);?></span><br/>
+                    <span id="city_two_squareft">City Square ft.: <?=number_format($cities['city_two']['square_ft']);?>sqft</span>
                 </div>
             </div>
             <div class="row">
