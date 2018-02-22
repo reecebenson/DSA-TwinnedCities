@@ -32,8 +32,17 @@
                 color: black !important;
                 font-family: "Open Sans", sans-serif;
             }
+            .photo_title{
+                color:white;
+                font-size: 20px;
+            }
+        </style>
+        <style type="text/css">        
+            .slideshow { height: 560px; width: 530px; margin: auto }
+            .slideshow img { padding: 7px; border-radius: 3px;;border: 1px solid #ccc; background-color: #eee; }
         </style>
 	</head>
+
 	<body>
 		<div class="container-fluid">
             <div class="row">
@@ -53,15 +62,44 @@
             <div class="row">
                 <div class="col-md" style="min-height: 600px; background-color: white; border-radius: 3px; margin: 5px; padding: 0px;">
                     <div id="map_left" style="border-radius: 10px;"></div>
-                </div>
+                </div>  
                 <div class="col-md" style="min-height: 600px; background-color: white; border-radius: 3px; margin: 5px; padding: 0px;">
                     <div id="map_right" style="border-radius: 10px;"></div>
+                </div>
+            </div>
+
+            <?php require_once('sys/classes/photos.php');?>        
+
+            <div class="row">
+                <div class="col-md" style="min-height: 200px; background-color: eee; border-radius: 3px; margin: 5px; padding: 0px;">
+                    <div id="photos_left" style="border-radius: 10px; overflow:auto">
+                        <div class="slideshow" style="position: relative;">
+                            <?php for ($i=0; $i < 50; $i++) { 
+                                echo("<span class='photo_title'>".$city_photos_one[$i]['title']."</span>");
+                                echo("<a href=".$city_photos_one[$i]['user_url']." target='_blank'>");
+                                echo("<img src=".$city_photos_one[$i]['url']." width='530' height='530' style=position: absolute; top: 0px; left: 0px; display: none; z-index: 5; opacity: 0; width: 530; height: 530;></a>");
+                            } ?>    
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md" style="min-height: 200px; background-color: eee; border-radius: 3px; margin: 5px; padding: 0px;">
+                    <div id="photos_right" style="border-radius: 10px;overflow:auto">
+                        <div class="slideshow" style="position: relative;">
+                            <?php for ($i=0; $i < 50; $i++) { 
+                                echo("<span class='photo_title'>".$city_photos_two[$i]['title']."</span>"); 
+                                echo("<a href=".$city_photos_two[$i]['user_url']." target='_blank'>");
+                                echo("<img src=".$city_photos_two[$i]['url']." width='530' height='530' style=position: absolute; top: 0px; left: 0px; display: none; z-index: 5; opacity: 0; width: 530; height: 530;></a>");
+                            } ?>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
 
 		<?php require_once('pages/scripts.php'); ?>
+
         <script type="text/javascript">
+            
             const $ = jQuery;
 
             function updateTimezones() {
@@ -160,12 +198,14 @@
                     position: place.geometry.location
                 });
 
-                google.maps.event.addListener(marker, 'click', function() {
+                google.maps.event.addListener(marker, 'mouseover', function() {
                     infowindow.setContent(place.name);
                     infowindow.open(m, this);
                 });
             }
+
         </script>
         <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBqtxJ8-MzY4Dvr6HDDwasownTMIvXYHXk&libraries=places&callback=initMap" async defer></script>
+       
     </body>
 </html>
