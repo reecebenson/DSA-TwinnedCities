@@ -10,3 +10,5 @@ sftp.json
 
 # History Folder
 **/.history
+
+.DS_Store
