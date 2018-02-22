@@ -18,9 +18,10 @@
 	 * @param string name Holds the table of what MySQLi should connect to
 	 */
 	$db_details = array(
-		'user' => 'dsa_twincities',
+		'user' => 'dsa-twinnedcities',
 		'pass' => 'hRfex3p6brDKjaZT',
 		'host' => 'localhost',
+		//'host' => '107.170.12.80',
 		'name' => 'dsa_twincities'
 	);
 	
@@ -68,5 +69,5 @@
 	$fl_details = array(
 		'key' => 'a1f7b43bfd28a320ceb0f9e62b93dfb6',
 		'id' => 'f79a498ed2f7d39f'
-	)
+	);
 ?>
