@@ -31,7 +31,7 @@
     }
 
     /**
-     * Find our previous Weather Log
+     * Find our previous Weather Log - finished
      */
     $weather = null;
     $response['last_pull'] = $site->getSystemInfo("last_weather_pull");
