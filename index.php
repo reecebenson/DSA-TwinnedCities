@@ -9,6 +9,12 @@
 	 * @link     http://github.com/reecebenson/dsa-twinnedcities/
 	 */
 
+    /**
+     * Map Styler
+     * 
+     * @link https://mapstyle.withgoogle.com/
+     */
+
 	/**
 	 * Requirements
 	 */
@@ -134,6 +140,61 @@
             var mapRight;
             var infowindow;
 
+            var mapStyle = [
+                {
+                    "featureType": "administrative",
+                    "elementType": "geometry",
+                    "stylers": [
+                        {
+                            "visibility": "off"
+                        }
+                    ]
+                },
+                {
+                    "featureType": "administrative.land_parcel",
+                    "elementType": "labels",
+                    "stylers": [
+                        {
+                            "visibility": "off"
+                        }
+                    ]
+                },
+                {
+                    "featureType": "poi",
+                    "stylers": [
+                        {
+                            "visibility": "off"
+                        }
+                    ]
+                },
+                {
+                    "featureType": "road",
+                    "elementType": "labels.icon",
+                    "stylers": [
+                        {
+                            "visibility": "off"
+                        }
+                    ]
+                },
+                {
+                    "featureType": "road.local",
+                    "elementType": "labels",
+                    "stylers": [
+                        {
+                            "visibility": "off"
+                        }
+                    ]
+                },
+                {
+                    "featureType": "transit",
+                    "stylers": [
+                        {
+                            "visibility": "off"
+                        }
+                    ]
+                }
+            ];
+
             function initMap() {
                 initMapLeft();
                 initMapRight();
@@ -143,9 +204,14 @@
                 var pyrmont = { lat: <?=$cities['city_one']['lat'];?>, lng: <?=$cities['city_one']['long'];?> };
 
                 mapLeft = new google.maps.Map(document.getElementById('map_left'), {
+                    mapTypeControlOptions: {
+                        mapTypeIds: ['mapstyle']
+                    },
                     center: pyrmont,
-                    zoom: 15
+                    zoom: 15,
+                    mapTypeId: 'mapStyle'
                 });
+                mapLeft.mapTypes.set('mapStyle', new google.maps.StyledMapType(mapStyle, { name: "Default Style" }));
 
                 infowindow = new google.maps.InfoWindow();
                 var service = new google.maps.places.PlacesService(mapLeft);
@@ -162,9 +228,14 @@
                 var pyrmont = { lat: <?=$cities['city_two']['lat'];?>, lng: <?=$cities['city_two']['long'];?> };
 
                 mapRight = new google.maps.Map(document.getElementById('map_right'), {
+                    mapTypeControlOptions: {
+                        mapTypeIds: ['mapstyle']
+                    },
                     center: pyrmont,
-                    zoom: 15
+                    zoom: 15,
+                    mapTypeId: 'mapStyle'
                 });
+                mapRight.mapTypes.set('mapStyle', new google.maps.StyledMapType(mapStyle, { name: "Default Style" }));
 
                 infowindow = new google.maps.InfoWindow();
                 var service = new google.maps.places.PlacesService(mapRight);

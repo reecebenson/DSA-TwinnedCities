@@ -1,4 +1,0 @@
-Practical Tutor states that having a city searcher and being able to select 2 cities is OK.
--> "aslong as everything in the specification is matched, it will be okay"
--> "the more you add, the more chance for error - so make sure everything is okay"
--> "if there wasnt a presentation i wouldve said no, but because there is you can walk everyone through it"
