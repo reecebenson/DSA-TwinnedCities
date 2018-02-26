@@ -24,15 +24,10 @@
 		{
 			global $db;
 
-			// > Grab all data
-			$statement = $db->prepare("SELECT `name`, `value` FROM `system_information`");
-			$statement->execute();
-			$statement->bind_result($name, $val);
-
 			// > Store data
-			while($statement->fetch())
+			foreach($db->query("SELECT `name`, `value` FROM `system_information`") as $res)
 			{
-				$this->sys_info[$name] = $val;
+				$this->sys_info[$res['name']] = $res['value'];
 			}
 		}
 
@@ -49,6 +44,83 @@
 		}
 
 		/**
+		 * Set data within the `system_information` table
+		 * 
+		 * @param string $name The name of the setting to set
+		 * @param string $val  The value of the setting to set
+		 */
+		public function setSystemInfo($name, $val)
+		{
+			global $db;
+
+			// Update Database
+			$statement = $db->prepare("UPDATE `system_information` SET `value` = ? WHERE `name` = ? LIMIT 1");
+			$statement->bindParam(1, $val);
+			$statement->bindParam(2, $name);
+			$statement->execute();
+
+			// Set the value locally
+			$this->sys_info[$name] = $val;
+		}
+		
+		/**
+		 * Store Weather Data
+		 * 
+		 * @param string $weatherData
+		 */
+		public function storeWeatherData($weatherData) {
+			global $db;
+
+			// Update Database
+			$statement = $db->prepare("UPDATE `city_weather` SET `temp` = :temp, `temp_min` = :tempMin, `temp_max` = :tempMax, `description` = :weatDesc, `icon` = :weatIcon, `cloud_percent` = :cloudPercent, `wind_speed` = :windSpeed, `wind_dir` = :windDir, `time_sunrise` = :sunRise, `time_sunset` = :sunSet WHERE `woeid` = :woeId LIMIT 1");
+			$statement->bindParam(':temp', 			$weatherData['main']['temp']);
+			$statement->bindParam(':tempMin',		$weatherData['main']['temp_min']);
+			$statement->bindParam(':tempMax', 		$weatherData['main']['temp_max']);
+			$statement->bindParam(':weatDesc', 		$weatherData['weather'][0]['description']);
+			$statement->bindParam(':weatIcon', 		$weatherData['weather'][0]['icon']);
+			$statement->bindParam(':cloudPercent', 	$weatherData['clouds']['all']);
+			$statement->bindParam(':windSpeed', 	$weatherData['wind']['speed']);
+			$statement->bindParam(':windDir', 		$weatherData['wind']['deg']);
+			$statement->bindParam(':sunRise', 		$weatherData['sys']['sunrise']);
+			$statement->bindParam(':sunSet', 		$weatherData['sys']['sunset']);
+			$statement->bindParam(':woeId',			$weatherData['woeid']);
+			$statement->execute();
+		}
+
+		/**
+		 * Get Stored Weather Data
+		 * 
+		 * @param string $woeid
+		 * @return JSON JSON Element
+		 */
+		public function getStoredWeatherData($woeid) {
+			global $db;
+
+			// Get data from database
+			$statement = $db->prepare("SELECT * FROM `city_weather` WHERE `woeid` = ? LIMIT 1");
+			$statement->bindParam(1, $woeid);
+			$statement->execute();
+
+			// Get row
+			$row = $statement->fetch(PDO::FETCH_ASSOC);
+
+			// Convert to Array formatted for "fetchWeather" file
+			$resp = array();
+			$resp['weather'] = array();
+			$resp['weather'][0]['description'] = $row['description'];
+			$resp['weather'][0]['icon'] = $row['icon'];
+			$resp['main']['temp'] = $row['temp'];
+			$resp['main']['temp_min'] = $row['temp_min'];
+			$resp['main']['temp_max'] = $row['temp_max'];
+			$resp['wind']['speed'] = $row['wind_speed'];
+			$resp['wind']['deg'] = $row['wind_dir'];
+			$resp['clouds']['all'] = $row['cloud_percent'];
+			$resp['sys']['sunrise'] = $row['time_sunrise'];
+			$resp['sys']['sunset'] = $row['time_sunset'];
+			return $resp;
+		}
+
+		/**
 		 * Convert a unix timestamp into a readable "time ago" format:
 		 * 'just now', 'x seconds ago', 'x minutes ago', etc...
 		 *
@@ -56,7 +128,8 @@
 		 *
 		 * @return string The "time ago" string
 		 */
-		public function timeago($ptime) {
+		public function timeago($ptime)
+		{
 			$etime = time() - $ptime;
 
 			if ($etime < 1)

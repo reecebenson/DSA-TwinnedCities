@@ -70,12 +70,12 @@ tbody > tr:hover {
 }
 
 .footer a {
-	color: #EEE;
+	color: #444;
 	text-decoration: none;
 }
 
 .footer a:hover, .footer a:visted {
-	color: #BBB;
+	color: #666;
 	text-decoration: underline;
 }
 

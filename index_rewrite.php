@@ -1,0 +1,298 @@
+<?php
+	/**
+	 * Homepage
+	 *
+	 * PHP version 5.6.30
+	 *
+	 * @author   Reece Benson, Lewis Cummins, Devon Davies, Daisy
+	 * @license  MIT License
+	 * @link     http://github.com/reecebenson/dsa-twinnedcities/
+	 */
+
+    /**
+     * TODO:
+     * - When selecting nav items on the left (Home, PoI, Twitter, Flickr), it will ajax update
+     *   the content. (Twitter whilst on "Manchester" will show tweets from Manchester, etc.)
+     * 
+     * NOTE:
+     * - This is Reece's page, so just leave it :)
+     */
+
+	/**
+	 * Requirements
+	 */
+	require_once('sys/core.php');
+?>
+<!DOCTYPE html>
+<html>
+    <head>
+		<title>Homepage | <?=$site->getSystemInfo("site_name_long");?></title>
+
+        <!-- HEADER REQUIREMENT -->
+		<link rel="icon" type="image/png" href="<?=$www;?>/gallery/img/favicon.png">
+		<link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" type="text/css" rel="stylesheet">
+		<link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" type="text/css" rel="stylesheet">
+		<link href="<?=$www;?>/gallery/css/index.css" type="text/css" rel="stylesheet">
+
+        <style type="text/css">        
+            .slideshow { height: 560px; width: 530px; margin: auto }
+            .slideshow img { padding: 7px; border-radius: 3px; border: 1px solid #ccc; background-color: #eee; }
+        </style>
+    </head>
+    <body style="margin: 0 auto;">
+        <div class="container">
+            <div id="content-container">
+                <div id="header">
+                    <?=$cities['city_one']['name'];?> and <?=$cities['city_two']['name'];?>
+                </div>
+                <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+                    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+                        <span class="navbar-toggler-icon"></span>
+                    </button>
+                
+                    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                        <ul class="navbar-nav mr-auto">
+                            <li class="nav-item active">
+                                <a class="nav-link" href="#"><i class="fa fa-home"></i> Home <span class="sr-only">(current)</span></a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" href="#"><i class="fa fa-map-marker"></i> Points of Interest</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" href="#"><i class="fa fa-twitter"></i> Twitter</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" href="#"><i class="fa fa-flickr"></i> Flickr</a>
+                            </li>
+                        </ul>
+                        <ul class="navbar-nav ml-auto">
+                            <li class="nav-item">
+                                <a class="nav-link" href="#"><?=$cities['city_one']['name'];?></a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" href="#"><?=$cities['city_two']['name'];?></a>
+                            </li>
+                        </ul>
+                    </div>
+                </nav>
+                <div class="container">
+                    <div id="content">
+                        <div class="row" id="placeInfo">
+                            <div class="col-sm">
+                                <div class="title">Weather</div>
+                                <div class="content" id="ajaxWeather">
+                                    <div id="icon"><img src="<?=$www;?>/gallery/img/load.gif" id="ajaxWeatherIcon" /></div>
+                                    <div id="name">Loading...</div>
+                                    <div id="data"></div>
+                                </div>
+                                <div class="last-pull">0 minutes ago</div>
+                            </div>
+                            <div class="col-sm">
+                                <div class="title">Information</div>
+                                <div class="content" id="ajaxInformation">
+                                    Loading...
+                                </div>
+                                <div class="last-pull">0 minutes ago</div>
+                            </div>
+                            <div class="col-sm">
+                                <div class="title">Places of Interest</div>
+                                <div class="content" id="ajaxPointsOfInterest">
+                                    Loading...
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row" style="margin: 0 auto;">
+                    <div class="col" style="padding: 0;">
+                        <div id="map" style="height: 400px; border-bottom-left-radius: 15px; border-bottom-right-radius: 15px;"></div>
+                    </div>
+                </div>
+            </div>
+            <div class="footer">
+                Copyright <?=@date("Y");?> &copy; <a href="<?=$www;?>"><?=$site->getSystemInfo("authors");?></a> | <a href="https://validator.w3.org/nu/?doc=http%3A%2F%2Fuwe.reecebenson.me%2Fdsa-twincities%2F" target="_blank">Validate W3C</a>
+            </div>
+        </div>
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.bundle.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.20.1/moment.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.20.1/locale/en-gb.js"></script>
+        <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBqtxJ8-MzY4Dvr6HDDwasownTMIvXYHXk&libraries=places&callback=initMap" async defer></script>
+        <script src="<?=$www;?>/gallery/js/moment.timezone.js"></script>
+        <script type="text/javascript">
+            /**
+             * Variables
+             */
+            let $ = jQuery;
+            let base = $(document);
+
+            /**
+             * Elements
+             */
+            // Map
+            let mapDiv = $("#map");
+            // Weather
+            let weatherContent = $("#ajaxWeather");
+            let weatherName = weatherContent.find("#name");
+            let weatherInfo = weatherContent.find("#data");
+            let weatherIcon = weatherContent.find("#ajaxWeatherIcon");
+            let weatherTime = weatherContent.parent().find(".last-pull");
+            // Information
+            let informationContent = $("#ajaxInformation");
+            // Points of Interest
+            let poiContent = $("#ajaxPointsOfInterest");
+
+            /**
+             * Function to fetch weather via AJAX Call
+             */
+            function fetchWeather(woeId, lat, long) {
+                let tempDiff = 273.15;
+                $.ajax({
+                    method: 'POST',
+                    dataType: 'json',
+                    url: './data/fetchWeather.php',
+                    async: false,
+                    timeout: 30000,
+                    data: { woeid: woeId, latitude: lat, longitude: long },
+                    error: () => {
+                        weatherName.html("There was an issue trying to fetch the data.");
+                        weatherTime.html("<a href='javascript:fetchWeather(" + woeId + ", " + lat + ", " + long + ");'>Refresh</a>");
+                        weatherInfo.html("");
+                        weatherContent.html("");
+                    },
+                    success: (result) => {
+                        // Deconstruct Variables
+                        let weatherData = result.weather;
+                        let tempCurrent = Math.floor(weatherData.main.temp - tempDiff);
+                        let tempMin = Math.floor(weatherData.main.temp_min - tempDiff);
+                        let tempMax = Math.floor(weatherData.main.temp_max - tempDiff);
+
+                        // Information
+                        let tempString = "Currently " + tempCurrent + "&#8451;, from " + tempMin + "&#8451; to " + tempMax + "&#8451;";
+                        let windString = "Wind: " + weatherData.wind.speed + "m/s, " + weatherData.wind.deg + "&deg; (" + getCardinalDirection(weatherData.wind.deg) + ")";
+                        let sunRiseSet = "Sunrise: " + weatherData.sunrise + ", Sunset: " + weatherData.sunset;
+
+                        // Set Weather Icon
+                        weatherName.html("<strong>" + toTitleCase(weatherData.weather[0].description) + "</strong> <small>(" + weatherData.clouds.all + "% clouds)</small>");
+                        weatherInfo.html(tempString + "<br/>" + windString + "<br/>" + sunRiseSet);
+                        weatherTime.html("Last updated " + result.timeago + " | <a href='javascript:fetchWeather(" + woeId +", " + lat + ", " + long + ");'>Refresh</a>");
+                        weatherIcon.attr("src", "http://openweathermap.org/img/w/" + weatherData.weather[0].icon + ".png");
+
+                        // Debug
+                        console.log(result);
+                    }
+                });
+            }
+
+            /**
+             * Convert each first letter of each word to Upper Case
+             */
+            function toTitleCase(str)
+            {
+                return str.replace(/\w\S*/g, function(txt) { return txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase(); });
+            }
+
+            /**
+             * Convert Degrees into Cardinal Direction
+             */
+            function getCardinalDirection(angle) {
+                if (typeof angle === 'string') angle = parseInt(angle);
+                if (angle <= 0 || angle > 360 || typeof angle === 'undefined') return '☈';
+                const arrows = { north: '↑ N', north_east: '↗ NE', east: '→ E', south_east: '↘ SE', south: '↓ S', south_west: '↙ SW', west: '← W', north_west: '↖ NW' };
+                const directions = Object.keys(arrows);
+                const degree = 360 / directions.length;
+                angle = angle + degree / 2;
+                for (let i = 0; i < directions.length; i++) {
+                    if (angle >= (i * degree) && angle < (i + 1) * degree) return arrows[directions[i]];
+                }
+                return arrows['north']; // < Fallback
+            }
+
+            /****************************
+             * MAP
+             ****************************/
+            var map;
+            var mapStyle = [
+                {
+                    "featureType": "administrative",
+                    "elementType": "geometry",
+                    "stylers": [
+                        {
+                            "visibility": "off"
+                        }
+                    ]
+                },
+                {
+                    "featureType": "administrative.land_parcel",
+                    "elementType": "labels",
+                    "stylers": [
+                        {
+                            "visibility": "off"
+                        }
+                    ]
+                },
+                {
+                    "featureType": "poi",
+                    "stylers": [
+                        {
+                            "visibility": "off"
+                        }
+                    ]
+                },
+                {
+                    "featureType": "road",
+                    "elementType": "labels.icon",
+                    "stylers": [
+                        {
+                            "visibility": "off"
+                        }
+                    ]
+                },
+                {
+                    "featureType": "road.local",
+                    "elementType": "labels",
+                    "stylers": [
+                        {
+                            "visibility": "off"
+                        }
+                    ]
+                },
+                {
+                    "featureType": "transit",
+                    "stylers": [
+                        {
+                            "visibility": "off"
+                        }
+                    ]
+                }
+            ];
+
+            function initialiseMap(_lat, _long) {
+                let latlong = { lat: _lat, lng: _long };
+
+                // Create our Map
+                map = new google.maps.Map(document.getElementById("map"), {
+                    mapTypeControlOptions: {
+                        mapTypeIds: ['mapstyle']
+                    },
+                    center: latlong,
+                    zoom: 12,
+                    mapTypeId: 'mapStyle'
+                });
+                map.mapTypes.set('mapStyle', new google.maps.StyledMapType(mapStyle, { name: "Default Style" }));
+            }
+
+            function initMap() {
+                // Call our initialise function (initMap is executed by the Google API Callback)
+                initialiseMap(<?=$cities['city_one']['lat'];?>, <?=$cities['city_one']['long'];?>);
+            }
+
+            /**
+             * Execute AJAX Calls when browser is ready
+             */
+            base.ready(() => {
+                fetchWeather("<?=$cities['city_one']['woeid'];?>", "<?=$cities['city_one']['lat'];?>", "<?=$cities['city_one']['long'];?>");
+            });
+        </script>
+    </body>
+</html>

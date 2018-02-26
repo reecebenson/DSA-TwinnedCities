@@ -18,7 +18,7 @@
 	 * @param string name Holds the table of what MySQLi should connect to
 	 */
 	$db_details = array(
-		'user' => 'dsa-twinnedcities',
+		'user' => 'dsa_twincities',
 		'pass' => 'hRfex3p6brDKjaZT',
 		'host' => 'localhost',
 		//'host' => '107.170.12.80',
@@ -31,6 +31,7 @@
 	$cities = array(
 		'city_one' => array(
 			'name' => "Manchester",
+			'woeid' => "28218",
 			'lat' => 53.4808,
 			'long' => -2.2426,
 			'timezone' => "Europe/London",
@@ -40,6 +41,7 @@
 
 		'city_two' => array(
 			'name' => "Los Angeles",
+			'woeid' => "2442047",
 			'lat' => 34.0522,
 			'long' => -118.2437,
 			'timezone' => "America/Los_Angeles",

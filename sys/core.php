@@ -32,7 +32,8 @@
 	 * 
 	 * @throws If Error - kills the web page and displays the MySQL Error
 	 */
-	$db = new MySQLi($db_details['host'], $db_details['user'], $db_details['pass'], $db_details['name']);
+	$db = new PDO("mysql:dbname=" . $db_details['name'] . ";host=" . $db_details['host'], $db_details['user'], $db_details['pass']);
+	//$db = new MySQLi($db_details['host'], $db_details['user'], $db_details['pass'], $db_details['name']);
 	if(!$db)
 	{
 		die('Error connecting to database: ' . mysqli_error());
