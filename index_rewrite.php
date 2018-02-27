@@ -67,45 +67,17 @@
                         </ul>
                         <ul class="navbar-nav ml-auto">
                             <li class="nav-item">
-                                <a class="nav-link" href="#"><?=$cities['city_one']['name'];?></a>
+                                <a class="nav-link" href="#" id="cityOneClick"><?=$cities['city_one']['name'];?></a>
                             </li>
                             <li class="nav-item">
-                                <a class="nav-link" href="#"><?=$cities['city_two']['name'];?></a>
+                                <a class="nav-link" href="#" id="cityTwoClick"><?=$cities['city_two']['name'];?></a>
                             </li>
                         </ul>
                     </div>
                 </nav>
-                <div class="container">
-                    <div id="content">
-                        <div class="row" id="placeInfo">
-                            <div class="col-sm">
-                                <div class="title">Weather</div>
-                                <div class="content" id="ajaxWeather">
-                                    <div id="icon"><img src="<?=$www;?>/gallery/img/load.gif" id="ajaxWeatherIcon" /></div>
-                                    <div id="name">Loading...</div>
-                                    <div id="data"></div>
-                                </div>
-                                <div class="last-pull">0 minutes ago</div>
-                            </div>
-                            <div class="col-sm">
-                                <div class="title">Information</div>
-                                <div class="content" id="ajaxInformation">
-                                    Loading...
-                                </div>
-                                <div class="last-pull">0 minutes ago</div>
-                            </div>
-                            <div class="col-sm">
-                                <div class="title">Places of Interest</div>
-                                <div class="content" id="ajaxPointsOfInterest">
-                                    Loading...
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="row" style="margin: 0 auto;">
-                    <div class="col" style="padding: 0;">
-                        <div id="map" style="height: 400px; border-bottom-left-radius: 15px; border-bottom-right-radius: 15px;"></div>
+                <div id="ajaxContent">
+                    <div style="text-align: center; padding-top: 25px;">
+                        <h3>Please select a city from the top right</h3>
                     </div>
                 </div>
             </div>
@@ -117,7 +89,7 @@
         <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.bundle.min.js"></script>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.20.1/moment.min.js"></script>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.20.1/locale/en-gb.js"></script>
-        <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBqtxJ8-MzY4Dvr6HDDwasownTMIvXYHXk&libraries=places&callback=initMap" async defer></script>
+        <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBqtxJ8-MzY4Dvr6HDDwasownTMIvXYHXk&libraries=places" async defer></script>
         <script src="<?=$www;?>/gallery/js/moment.timezone.js"></script>
         <script type="text/javascript">
             /**
@@ -127,25 +99,31 @@
             let base = $(document);
 
             /**
-             * Elements
+             * City Data
              */
-            // Map
-            let mapDiv = $("#map");
-            // Weather
-            let weatherContent = $("#ajaxWeather");
-            let weatherName = weatherContent.find("#name");
-            let weatherInfo = weatherContent.find("#data");
-            let weatherIcon = weatherContent.find("#ajaxWeatherIcon");
-            let weatherTime = weatherContent.parent().find(".last-pull");
-            // Information
-            let informationContent = $("#ajaxInformation");
-            // Points of Interest
-            let poiContent = $("#ajaxPointsOfInterest");
+            let cityOne = <?=json_encode($cities['city_one']);?>;
+            let cityTwo = <?=json_encode($cities['city_two']);?>;
 
             /**
              * Function to fetch weather via AJAX Call
              */
             function fetchWeather(woeId, lat, long) {
+                /**
+                 * Elements
+                 */
+                // Map
+                let mapDiv = $("#map");
+                // Weather
+                let weatherContent = $("#ajaxWeather");
+                let weatherName = weatherContent.find("#name");
+                let weatherInfo = weatherContent.find("#data");
+                let weatherIcon = weatherContent.find("#ajaxWeatherIcon");
+                let weatherTime = weatherContent.parent().find(".last-pull");
+                // Information
+                let informationContent = $("#ajaxInformation");
+                // Points of Interest
+                let poiContent = $("#ajaxPointsOfInterest");
+
                 let tempDiff = 273.15;
                 $.ajax({
                     method: 'POST',
@@ -282,16 +260,50 @@
                 map.mapTypes.set('mapStyle', new google.maps.StyledMapType(mapStyle, { name: "Default Style" }));
             }
 
-            function initMap() {
-                // Call our initialise function (initMap is executed by the Google API Callback)
-                initialiseMap(<?=$cities['city_one']['lat'];?>, <?=$cities['city_one']['long'];?>);
+            function executeCity(woeId, lat, long) {
+                // Get out content page
+                let contentHolder = $("#ajaxContent");
+                $.get("./pages/content.php", function(data) {
+                    // Replace HTML with the data inside of content
+                    contentHolder.html(data);
+
+                    // Initialise City Data
+                    setTimeout(() => {
+                        initialiseMap(lat, long);
+                        fetchWeather(woeId, lat, long);
+                    }, 500);
+                });
             }
 
             /**
              * Execute AJAX Calls when browser is ready
              */
             base.ready(() => {
-                fetchWeather("<?=$cities['city_one']['woeid'];?>", "<?=$cities['city_one']['lat'];?>", "<?=$cities['city_one']['long'];?>");
+                /**
+                 * Setup Clickers
+                 */
+                let btnCityOne = $("#cityOneClick");
+                let btnCityTwo = $("#cityTwoClick");
+
+                /**
+                 * Setup Listeners
+                 */
+                btnCityOne.click(function() {
+                    btnCityOne.parent().addClass("active");
+                    btnCityTwo.parent().removeClass("active");
+                    executeCity(cityOne.woeid, cityOne.lat, cityOne.long);
+                });
+
+                btnCityTwo.click(function() {
+                    btnCityTwo.parent().addClass("active");
+                    btnCityOne.parent().removeClass("active");
+                    executeCity(cityTwo.woeid, cityTwo.lat, cityTwo.long);
+                });
+
+                /**
+                 * Ready!
+                 */
+                console.log("Ready!");
             });
         </script>
     </body>

@@ -34,13 +34,13 @@
      * Find our previous Weather Log - finished
      */
     $weather = null;
-    $response['last_pull'] = $site->getSystemInfo("last_weather_pull");
+    $response['last_pull'] = $site->getSystemInfo("last_weather_pull_".$woeid);
     if((time() - (int)$response['last_pull']) > 3600) {
         // Pull new weather data
         $weather = Places::queryPlaceWeather($latitude, $longitude);
 
         // Reset timer
-        $site->setSystemInfo("last_weather_pull", time());
+        $site->setSystemInfo("last_weather_pull_".$woeid, time());
 
         // Update stored weather data
         $weather['woeid'] = $woeid;
@@ -54,7 +54,7 @@
     /**
      * Set our timeago string
      */
-    $response['timeago'] = $site->timeago((int)$site->getSystemInfo("last_weather_pull"));
+    $response['timeago'] = $site->timeago((int)$site->getSystemInfo("last_weather_pull_".$woeid));
 
     /**
      * Build our response
