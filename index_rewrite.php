@@ -307,7 +307,7 @@
                     break;
 
                     case "flickr": {
-                        $.get("./pages/flickr.php", function(data) {
+                        $.get("./pages/flickr.php?woeid=" + woeId, function(data) {
                             // Replace HTML with the data inside of content
                             contentHolder.html(data);
                         });
@@ -351,6 +351,9 @@
                 btnCityOne.click(function() {
                     btnCityOne.parent().addClass("active");
                     btnCityTwo.parent().removeClass("active");
+                    btnPoi.removeClass("disabled");
+                    btnTwitter.removeClass("disabled");
+                    btnFlickr.removeClass("disabled");
                     currentCity = cityOne;
                     executeCity(cityOne.woeid, cityOne.lat, cityOne.long, currentPage);
                 });
@@ -358,6 +361,9 @@
                 btnCityTwo.click(function() {
                     btnCityTwo.parent().addClass("active");
                     btnCityOne.parent().removeClass("active");
+                    btnPoi.removeClass("disabled");
+                    btnTwitter.removeClass("disabled");
+                    btnFlickr.removeClass("disabled");
                     currentCity = cityTwo;
                     executeCity(cityTwo.woeid, cityTwo.lat, cityTwo.long, currentPage);
                 });
