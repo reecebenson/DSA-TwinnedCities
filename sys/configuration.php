@@ -36,7 +36,17 @@
 			'long' => -2.2426,
 			'timezone' => "Europe/London",
 			'population' => 541300,
-			'square_ft' => 44.7
+			'square_ft' => 44.7,
+			'poi' => array(
+				"The John Rylands Library" => array(
+					"name" => "The John Rylands Library",
+					"desc" => "The University of Manchester Library is one of only five National Research Libraries. With more than 4 million printed books and manuscripts, over 41,000 electronic journals and 500,000 electronic books, as well as several hundred databases, the library is one of the best-resourced academic libraries in the country.",
+					"www" => "http://www.library.manchester.ac.uk/rylands/",
+					"phone" => "+44 161 306 0555",
+					"address" => "150 Deansgate, Manchester M3 3EH, England",
+					"image" => "https://www.creativetourist.com/cms/wp-content/uploads/2016/08/JRL-Historic-Reading-Room-1-785x486.jpg"
+				)
+			)
 		),
 
 		'city_two' => array(
@@ -46,7 +56,17 @@
 			'long' => -118.2437,
 			'timezone' => "America/Los_Angeles",
 			'population' => 3792621,
-			'square_ft' => 502.76
+			'square_ft' => 502.76,
+			'poi' => array(
+				"test" => array(
+					"name" => "test",
+					"desc" => "test",
+					"www" => "http://google.co.uk",
+					"phone" => "+44 123 456 7890",
+					"address" => "some address",
+					"image" => "https://media.timeout.com/images/100559497/1024/576/image.jpg"
+				)
+			)
 		)
 	);
 

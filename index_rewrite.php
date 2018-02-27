@@ -51,18 +51,18 @@
                     </button>
                 
                     <div class="collapse navbar-collapse" id="navbarSupportedContent">
-                        <ul class="navbar-nav mr-auto">
+                        <ul class="navbar-nav mr-auto" id="navbarNav">
                             <li class="nav-item active">
-                                <a class="nav-link" href="#"><i class="fa fa-home"></i> Home <span class="sr-only">(current)</span></a>
+                                <a class="nav-link" href="#" id="btnHome"><i class="fa fa-home"></i> Home <span class="sr-only">(current)</span></a>
                             </li>
                             <li class="nav-item">
-                                <a class="nav-link" href="#"><i class="fa fa-map-marker"></i> Points of Interest</a>
+                                <a class="nav-link" href="#" id="btnPoi"><i class="fa fa-map-marker"></i> Points of Interest</a>
                             </li>
                             <li class="nav-item">
-                                <a class="nav-link" href="#"><i class="fa fa-twitter"></i> Twitter</a>
+                                <a class="nav-link" href="#" id="btnTwitter"><i class="fa fa-twitter"></i> Twitter</a>
                             </li>
                             <li class="nav-item">
-                                <a class="nav-link" href="#"><i class="fa fa-flickr"></i> Flickr</a>
+                                <a class="nav-link" href="#" id="btnFlickr"><i class="fa fa-flickr"></i> Flickr</a>
                             </li>
                         </ul>
                         <ul class="navbar-nav ml-auto">
@@ -260,18 +260,72 @@
                 map.mapTypes.set('mapStyle', new google.maps.StyledMapType(mapStyle, { name: "Default Style" }));
             }
 
-            function executeCity(woeId, lat, long) {
-                // Get out content page
+            function executeCity(woeId, lat, long, page) {
+                // Get our content holder
                 let contentHolder = $("#ajaxContent");
-                $.get("./pages/content.php", function(data) {
-                    // Replace HTML with the data inside of content
-                    contentHolder.html(data);
 
-                    // Initialise City Data
-                    setTimeout(() => {
-                        initialiseMap(lat, long);
-                        fetchWeather(woeId, lat, long);
-                    }, 500);
+                // Get our specified page
+                switch(page) {
+                    default: case "home": {
+                        $.get("./pages/main.php", function(data) {
+                            // Replace HTML with the data inside of content
+                            contentHolder.html(data);
+
+                            // Initialise City Data
+                            initialiseMap(lat, long);
+                            fetchWeather(woeId, lat, long);
+                        });
+                    };
+                    break;
+
+                    case "poi": {
+                        $.get("./pages/poi.php?woeid="+woeId, function(data) {
+                            // Replace HTML with the data inside of content
+                            contentHolder.html(data);
+
+                            // Initialise Points of Interest Table
+                            //initialisePOI(woeId);
+
+                        });
+                    };
+                    break;
+
+                    case "specific_poi": {
+                        $.get("./pages/singlepoi.php", function(data) {
+                            // Replace HTML with the data inside of content
+                            contentHolder.html(data);
+                        });
+                    };
+                    break;
+
+                    case "twitter": {
+                        $.get("./pages/twitter.php", function(data) {
+                            // Replace HTML with the data inside of content
+                            contentHolder.html(data);
+                        });
+                    };
+                    break;
+
+                    case "flickr": {
+                        $.get("./pages/flickr.php", function(data) {
+                            // Replace HTML with the data inside of content
+                            contentHolder.html(data);
+                        });
+                    };
+                    break;
+                }
+            }
+
+            /**
+             * Navigation Bar Button Reset
+             */
+            function removeActiveButtons() {
+                let navbar = $("#navbarNav");
+                navbar.each(function() {
+                    $(this).find("li").each(function() {
+                        let navbarItem = $(this);
+                        navbarItem.removeClass("active");
+                    });
                 });
             }
 
@@ -282,8 +336,14 @@
                 /**
                  * Setup Clickers
                  */
+                let currentCity = null;
+                let currentPage = "home";
                 let btnCityOne = $("#cityOneClick");
                 let btnCityTwo = $("#cityTwoClick");
+                let btnHome = $("#btnHome");
+                let btnPoi = $("#btnPoi");
+                let btnTwitter = $("#btnTwitter");
+                let btnFlickr = $("#btnFlickr");
 
                 /**
                  * Setup Listeners
@@ -291,14 +351,57 @@
                 btnCityOne.click(function() {
                     btnCityOne.parent().addClass("active");
                     btnCityTwo.parent().removeClass("active");
-                    executeCity(cityOne.woeid, cityOne.lat, cityOne.long);
+                    currentCity = cityOne;
+                    executeCity(cityOne.woeid, cityOne.lat, cityOne.long, currentPage);
                 });
 
                 btnCityTwo.click(function() {
                     btnCityTwo.parent().addClass("active");
                     btnCityOne.parent().removeClass("active");
-                    executeCity(cityTwo.woeid, cityTwo.lat, cityTwo.long);
+                    currentCity = cityTwo;
+                    executeCity(cityTwo.woeid, cityTwo.lat, cityTwo.long, currentPage);
                 });
+
+                btnHome.click(function() {
+                    if(currentCity == null) return;
+                    executeCity(currentCity.woeid, currentCity.lat, currentCity.long, "home");
+                    currentPage = "home";
+                    removeActiveButtons();
+                    btnHome.parent().addClass("active");
+                });
+
+                btnPoi.click(function() {
+                    if(currentCity == null) return;
+                    executeCity(currentCity.woeid, currentCity.lat, currentCity.long, "poi");
+                    currentPage = "poi";
+                    removeActiveButtons();
+                    btnPoi.parent().addClass("active");
+                });
+
+                btnTwitter.click(function() {
+                    if(currentCity == null) return;
+                    executeCity(currentCity.woeid, currentCity.lat, currentCity.long, "twitter");
+                    currentPage = "twitter";
+                    removeActiveButtons();
+                    btnTwitter.parent().addClass("active");
+                });
+
+                btnFlickr.click(function() {
+                    if(currentCity == null) return;
+                    executeCity(currentCity.woeid, currentCity.lat, currentCity.long, "flickr");
+                    currentPage = "flickr";
+                    removeActiveButtons();
+                    btnFlickr.parent().addClass("active");
+                });
+
+                /**
+                 * Disable buttons whilst currentCity is null
+                 */
+                if(currentCity == null) {
+                    btnPoi.addClass("disabled");
+                    btnTwitter.addClass("disabled");
+                    btnFlickr.addClass("disabled");
+                }
 
                 /**
                  * Ready!

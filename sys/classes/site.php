@@ -121,6 +121,45 @@
 		}
 
 		/**
+		 * Get the city data from the database specified by WOEID
+		 * 
+		 * @param int $woeid
+		 * @return array
+		 */
+		public function getCityData($woeid) {
+			global $db;
+
+			// Get data from database
+			$statement = $db->prepare("SELECT * FROM `city` WHERE `woeid` = ? LIMIT 1");
+			$statement->bindParam(1, $woeid);
+			$statement->execute();
+
+			// Get row
+			$row = $statement->fetch(PDO::FETCH_ASSOC);
+
+			// Add POI
+			if($row) $row['poi'] = $this->getPointsOfInterest($woeid);
+
+			// Return
+			return ($row ? $row : null);
+		}
+
+		public function getPointsOfInterest($woeid) {
+			global $db, $cities;
+
+			$city = null;
+			foreach($cities as $c) {
+				if($c['woeid'] == $woeid) {
+					$city = $c;
+					break;
+				}
+			}
+
+			// Get Points of Interest from Configuration
+			return ($city != null ? $city['poi'] : null);
+		}
+
+		/**
 		 * Convert a unix timestamp into a readable "time ago" format:
 		 * 'just now', 'x seconds ago', 'x minutes ago', etc...
 		 *
