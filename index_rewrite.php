@@ -105,6 +105,19 @@
             let cityTwo = <?=json_encode($cities['city_two']);?>;
 
             /**
+             * Function for when waiting for a tab to load
+             */
+            function waitForLoad() {
+                /**
+                 * Elements
+                 */
+                 let ajaxContent = $("#ajaxContent");
+
+                 // Set Element HTML
+                 ajaxContent.html("<div style='text-align: center; margin-top: 25px;'><img src='<?=$www;?>/gallery/img/load.gif'></div>");
+            }
+
+            /**
              * Function to fetch weather via AJAX Call
              */
             function fetchWeather(woeId, lat, long) {
@@ -165,7 +178,7 @@
             /**
              * Function to fetch Information via AJAX Call
              */
-             function fetchInformation(woeid) {
+             function fetchInformation(woeId) {
                  
                 /**
                  * Elements
@@ -181,11 +194,20 @@
                     timeout: 30000,
                     data: { woeid: woeId },
                     error: () => {
-                        weatherName.html("There was an issue trying to fetch the data.");
+                        ajaxInfo.html("There was an issue trying to fetch the data.");
                     },
                     success: (result) => {
-                        // Build Information
-                        
+                        let cityInfo = result.city;
+                        let info = "";
+
+                        // Build City Information
+                        info += "<div class='row'>";
+                        info += "<div class='col' style='font-weight:bold; text-align: right;'>Name:<br/>Population:<br/>Timezone:<br/>Lat/Long:<br/>Something Else:</div>";
+                        info += "<div class='col'>" + cityInfo.name + "<br/>" + cityInfo.population + "<br/><span id='timezone'></span><br/>" + cityInfo.lat + "," + cityInfo.long + "<br/>banter</div>";
+                        info += "</div>";
+
+                        // Present Information
+                        ajaxInfo.html(info);
 
                         // Debug
                         console.log(result);
@@ -296,6 +318,7 @@
                 let contentHolder = $("#ajaxContent");
 
                 // Get our specified page
+                waitForLoad();
                 switch(page) {
                     default: case "home": {
                         $.get("./pages/main.php", function(data) {
@@ -359,6 +382,26 @@
                         navbarItem.removeClass("active");
                     });
                 });
+            }
+            
+            /**
+             * Function to update timezone text
+             */
+            function updateTimezones() {
+                // Declare Elements
+                const cityLeft = $("#city_one_timezone");
+                const cityRight = $("#city_two_timezone");
+
+                // Get our formatted strings for the timezones on our cities
+                const cityLeftTimezone = moment().tz('<?=$cities['city_one']['timezone'];?>').format('MMMM Do YYYY, h:mm:ss a');
+                const cityRightTimezone = moment().tz('<?=$cities['city_two']['timezone'];?>').format('MMMM Do YYYY, h:mm:ss a');
+
+                // Set elements data
+                cityLeft.html(cityLeftTimezone);
+                cityRight.html(cityRightTimezone);
+
+                // Recursive (every 1000ms)
+                setTimeout(updateTimezones, 1000);
             }
 
             /**

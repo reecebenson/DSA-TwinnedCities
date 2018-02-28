@@ -31,7 +31,7 @@
     /**
      * Get city data
      */
-    $resp['city'] = $site->getCityData($woeid);
+    $response['city'] = $site->getCityData($woeid);
 
     /**
      * Output

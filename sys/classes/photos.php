@@ -78,7 +78,7 @@
 			$farm = $results['photo'][$photo_num]['farm'];
 			$owner = $results['photo'][$photo_num]['owner'];
 
-			$photo_url = "https://farm".$farm.".staticflickr.com/".$server."/".$id."_".$secret."_z.jpg";
+			$photo_url = "https://farm".$farm.".staticflickr.com/".$server."/".$id."_".$secret."_c.jpg";
 
 			$photo_results[$i]['url'] = $photo_url;
 			$photo_results[$i]['title'] = $title;	
