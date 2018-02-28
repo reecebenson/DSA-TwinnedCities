@@ -16,7 +16,7 @@
      * done - Each Point of Interest should have a page showing more in-depth information
      * todo     • Link each PoI to another PoI in the surrounding city (link to images about it, show tweets of PoI if possible, etc.)
      * 
-     * Weather
+     * Weather - 5 day forecast api, link to open up little webpage with forecast (Reece)
      * done - Cache the weather every 60 minutes, process of doing so:
      *          • Check against the table to look for a weather log
      *          • If the weather log is present, check the timestamp
