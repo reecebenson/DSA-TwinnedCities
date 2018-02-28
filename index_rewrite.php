@@ -34,7 +34,7 @@
 		<link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" type="text/css" rel="stylesheet">
 		<link href="<?=$www;?>/gallery/css/index.css" type="text/css" rel="stylesheet">
 
-        <style type="text/css">        
+        <style>        
             .slideshow { height: 560px; width: 530px; margin: auto }
             .slideshow img { padding: 7px; border-radius: 3px; border: 1px solid #ccc; background-color: #eee; }
         </style>
@@ -91,7 +91,7 @@
         <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.20.1/locale/en-gb.js"></script>
         <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBqtxJ8-MzY4Dvr6HDDwasownTMIvXYHXk&libraries=places" async defer></script>
         <script src="<?=$www;?>/gallery/js/moment.timezone.js"></script>
-        <script type="text/javascript">
+        <script>
             /**
              * Variables
              */
@@ -161,6 +161,37 @@
                     }
                 });
             }
+
+            /**
+             * Function to fetch Information via AJAX Call
+             */
+             function fetchInformation(woeid) {
+                 
+                /**
+                 * Elements
+                 */
+                let ajaxInfo = $("#ajaxInformation");
+
+                // Submit Ajax Request
+                $.ajax({
+                    method: 'POST',
+                    dataType: 'json',
+                    url: './data/fetchInfo.php',
+                    async: false,
+                    timeout: 30000,
+                    data: { woeid: woeId },
+                    error: () => {
+                        weatherName.html("There was an issue trying to fetch the data.");
+                    },
+                    success: (result) => {
+                        // Build Information
+                        
+
+                        // Debug
+                        console.log(result);
+                    }
+                });
+             }
 
             /**
              * Convert each first letter of each word to Upper Case
@@ -274,6 +305,7 @@
                             // Initialise City Data
                             initialiseMap(lat, long);
                             fetchWeather(woeId, lat, long);
+                            fetchInformation(woeId);
                         });
                     };
                     break;
@@ -291,7 +323,7 @@
                     break;
 
                     case "specific_poi": {
-                        $.get("./pages/singlepoi.php", function(data) {
+                        $.get("./pages/singlepoi.php?woeid="+woeId+"&id=null", function(data) {
                             // Replace HTML with the data inside of content
                             contentHolder.html(data);
                         });
@@ -299,7 +331,7 @@
                     break;
 
                     case "twitter": {
-                        $.get("./pages/twitter.php", function(data) {
+                        $.get("./pages/twitter.php?woeid="+woeId, function(data) {
                             // Replace HTML with the data inside of content
                             contentHolder.html(data);
                         });

@@ -31,7 +31,6 @@
                 <div class="content" id="ajaxInformation">
                     Loading...
                 </div>
-                <div class="last-pull">0 minutes ago</div>
             </div>
             <div class="col-sm">
                 <div class="title">Points of Interest</div>

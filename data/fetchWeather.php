@@ -57,11 +57,6 @@
     $response['timeago'] = $site->timeago((int)$site->getSystemInfo("last_weather_pull_".$woeid));
 
     /**
-     * Build our response
-     */
-    //$weather = Places::queryPlaceWeather($latitude, $longitude);
-
-    /**
      * Fix for 'degree' in weather response
      */
     if(!isset($weather['wind']['deg']))
