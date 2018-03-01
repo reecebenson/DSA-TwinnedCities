@@ -40,7 +40,7 @@
 	 * Check we have valid POI
 	 */
 	if($poi == null)
-		die('POI data invalid, maybe it doesn\'t exist?');
+		die('POI data invalid, maybe it doesn\'t exist? [' . $_REQUEST["name"] . ']');
 ?>
 <div class="container">
 	<div class="row">

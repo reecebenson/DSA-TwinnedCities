@@ -138,25 +138,47 @@
 			$row = $statement->fetch(PDO::FETCH_ASSOC);
 
 			// Add POI
-			if($row) $row['poi'] = $this->getPointsOfInterest($woeid);
+			if($row)
+				$row['poi'] = $this->getPointsOfInterest($woeid);
+
+			// Fix Floats
+			$row['lat'] = (float)$row['lat'];
+			$row['long'] = (float)$row['long'];
 
 			// Return
 			return ($row ? $row : null);
 		}
 
 		public function getPointsOfInterest($woeid) {
-			global $db, $cities;
+			global $db;
 
-			$city = null;
-			foreach($cities as $c) {
-				if($c['woeid'] == $woeid) {
-					$city = $c;
-					break;
-				}
+			// Setup POI Variable
+			$poi = array();
+
+			// Get data from database
+			$statement = $db->prepare("SELECT * FROM `places` WHERE `city_id` = ?");
+			$statement->bindParam(1, $woeid);
+			$statement->execute();
+
+			// Fetch all data
+			foreach($statement->fetchAll() as $res)
+			{
+				// Setup Place
+				$place = array(
+					"name" => htmlspecialchars($res['name']),
+					"desc" => htmlspecialchars($res['description']),
+					"www" => $res['www'],
+					"phone" => $res['phone'],
+					"address" => $res['address'],
+					"image" => $res['img_source']
+				);
+
+				// Add Place to POI Array
+				$poi[$res['name']] = $place;
 			}
 
 			// Get Points of Interest from Configuration
-			return ($city != null ? $city['poi'] : null);
+			return $poi;
 		}
 
 		/**
