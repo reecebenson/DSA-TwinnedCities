@@ -339,6 +339,16 @@
             ];
 
             var infoWindow, markerClicked, markers = [];
+
+            String.prototype.trunc = String.prototype.trunc ||
+                function(n) {
+                    return (this.length > n) ? this.substr(0, n-1) + '&hellip;' : this;
+                };
+
+            function buildMarkerContent(content) {
+                return "<div style='width: 400px;'><h3>" + content.name + "</h3><p>" + content.desc.trunc(200) + "&nbsp;<a href='#'>read more</a></p><p>" + content.www + "</p></div>";
+            }
+
             function createMarker(name, content, m) {
                 let latlong = new google.maps.LatLng(content.lat, content.long);
                 let marker = new google.maps.Marker({
@@ -349,7 +359,7 @@
                 markers.push(marker);
 
                 google.maps.event.addListener(marker, 'mouseover', function() {
-                    infoWindow.setContent(content.name);
+                    infoWindow.setContent(buildMarkerContent(content));
                     infoWindow.open(m, this);
                 });
             }
@@ -375,7 +385,7 @@
             }
 
             function selectPoint(markerId) {
-                infoWindow.setContent("test");
+                infoWindow.setContent(buildMarkerContent(markers[markerId].data));
                 infoWindow.open(map, markers[markerId]);
                 console.log(markers[markerId]);
             }
