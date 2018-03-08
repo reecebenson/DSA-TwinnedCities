@@ -165,12 +165,17 @@
 			{
 				// Setup Place
 				$place = array(
+					"place_id" => $res['place_id'],
+					"place_type" => $res['place_type'],
 					"name" => htmlspecialchars($res['name']),
 					"desc" => htmlspecialchars($res['description']),
+					"capacity" => $res['capacity'],
 					"www" => $res['www'],
 					"phone" => $res['phone'],
 					"address" => $res['address'],
-					"image" => $res['img_source']
+					"image" => $res['img_source'],
+					"lat" => $res['lat'],
+					"long" => $res['long']
 				);
 
 				// Add Place to POI Array

@@ -186,8 +186,7 @@
             /**
              * Function to fetch Information via AJAX Call
              */
-             function fetchInformation(woeId) {
-                 
+            function fetchInformation(woeId) {
                 /**
                  * Elements
                  */
@@ -224,7 +223,37 @@
                         console.log(result);
                     }
                 });
-             }
+            }
+            
+            /**
+             * Function to fetch POIs via AJAX Call
+             */
+            function fetchPointsOfInterest(woeId) {
+                /**
+                 * Elements
+                 */
+                let ajaxPoi = $("#ajaxPointsOfInterest");
+
+                // Submit Ajax Request
+                $.ajax({
+                    method: 'POST',
+                    dataType: 'json',
+                    url: './data/fetchPointsOfInterest.php',
+                    async: false,
+                    timeout: 30000,
+                    data: { woeid: woeId, type: "list" },
+                    error: () => {
+                        ajaxPoi.html("There was an issue trying to fetch the data.");
+                    },
+                    success: (result) => {
+                        // Present Information
+                        ajaxPoi.html(result.text);
+
+                        // Debug
+                        console.log(result);
+                    }
+                });
+            }
 
             /**
              * Convert each first letter of each word to Upper Case
@@ -309,7 +338,23 @@
                 }
             ];
 
-            function initialiseMap(_lat, _long) {
+            var infoWindow, markerClicked, markers = [];
+            function createMarker(name, content, m) {
+                let latlong = new google.maps.LatLng(content.lat, content.long);
+                let marker = new google.maps.Marker({
+                    map: m,
+                    position: latlong,
+                    data: content
+                });
+                markers.push(marker);
+
+                google.maps.event.addListener(marker, 'mouseover', function() {
+                    infoWindow.setContent(content.name);
+                    infoWindow.open(m, this);
+                });
+            }
+
+            function initialiseMap(_lat, _long, woeId) {
                 let latlong = { lat: _lat, lng: _long };
 
                 // Create our Map
@@ -322,15 +367,17 @@
                     mapTypeId: 'mapStyle'
                 });
                 map.mapTypes.set('mapStyle', new google.maps.StyledMapType(mapStyle, { name: "Default Style" }));
+                infoWindow = new google.maps.InfoWindow();
 
                 // Generate Markers
-                let markers = [];
-                for(var i = 0; i < currentCity.poi; i++) {
-                    let place = currentCity.poi[i];
-                    console.log(place);
-                }
+                markers = [];
+                $.each(currentCity.poi, (key, val) => createMarker(key, val, map));
+            }
 
-                // Create Markers
+            function selectPoint(markerId) {
+                infoWindow.setContent("test");
+                infoWindow.open(map, markers[markerId]);
+                console.log(markers[markerId]);
             }
 
             function executeCity(woeId, lat, long, page) {
@@ -346,9 +393,10 @@
                             contentHolder.html(data);
 
                             // Initialise City Data
-                            initialiseMap(lat, long);
+                            initialiseMap(lat, long, woeId);
                             fetchWeather(woeId, lat, long);
                             fetchInformation(woeId);
+                            fetchPointsOfInterest(woeId);
                         });
                     };
                     break;
@@ -357,10 +405,6 @@
                         $.get("./pages/poi.php?woeid="+woeId, function(data) {
                             // Replace HTML with the data inside of content
                             contentHolder.html(data);
-
-                            // Initialise Points of Interest Table
-                            //initialisePOI(woeId);
-
                         });
                     };
                     break;
