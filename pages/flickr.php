@@ -69,7 +69,7 @@
 			echo("<h1>NO PHOTOS LOADED</h1>");
 		} else {
 			
-			for($i = 0; $i < count($photos); $i++) {
+			for($i = 0; $i < 20; $i++) {
 				// Get our photo
 				$photo = $photos[$woeid][$i];
 				
