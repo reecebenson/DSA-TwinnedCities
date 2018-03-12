@@ -1,0 +1,4 @@
+# Use this for the Source Version of the assignment
+
+# php_flag engine off
+# AddType text/plain php css phps html js

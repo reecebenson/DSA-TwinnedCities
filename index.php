@@ -338,15 +338,29 @@
                 }
             ];
 
+            /**
+             * Variables
+             */
             var infoWindow, markerClicked, markers = [];
 
+            /**
+             * Truncation Function
+             */
             String.prototype.trunc = String.prototype.trunc ||
                 function(n) {
                     return (this.length > n) ? this.substr(0, n-1) + '&hellip;' : this;
                 };
 
             function buildMarkerContent(content) {
-                return "<div style='width: 400px;'><h3>" + content.name + "</h3><p>" + content.desc.trunc(200) + "&nbsp;<a href='#'>read more</a></p><p>" + content.www + "</p></div>";
+                let name = content.name;
+                let desc = content.desc.trunc(200);
+                let website = content.www;
+                let phone = content.phone;
+
+                let cWebsite = "<button onclick='window.open(\"" + website + "\", \"_blank\");' class='btn btn-default'><i class='fa fa-globe'></i></button>";
+                let cPhone = "<button class='btn btn-default' " + (phone == null ? "disabled" : "") + " onclick='window.open(\"" + (phone != null ? "tel:" + phone : "") + "\");'><i class='fa fa-phone'></i></button>";
+
+                return "<div style='width: 400px;'><h3>" + name + "</h3><p>" + desc + "&nbsp;</p><div class='btn-group' role='group'>" + cWebsite + cPhone + "</div></div>";
             }
 
             function createMarker(name, content, m) {

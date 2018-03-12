@@ -46,6 +46,9 @@
         switch($_REQUEST['type']) {
             default:
             case "list": {
+                /**
+                 * Build content
+                 */
                 $builtList = "";
                 $id = 0;
                 foreach($city['poi'] as $name => $data) {

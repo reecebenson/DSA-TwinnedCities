@@ -34,7 +34,7 @@
             </div>
             <div class="col-sm">
                 <div class="title">Points of Interest</div>
-                <div class="content" id="ajaxPointsOfInterest" style="overflow-y: scroll; overflow-x: hidden; max-height: 131px;">
+                <div class="content" id="ajaxPointsOfInterest" style="overflow-y: scroll; overflow-x: hidden; min-height: 99px; max-height: 100px;">
                     Loading...
                 </div>
             </div>
