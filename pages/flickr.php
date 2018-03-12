@@ -146,12 +146,8 @@
 	}
 
 	.button-update{
-		background-color : rgb(215,215,215);
-		text-align: center;
-		text-decoration: none;
-		display: block;
-		margin:0 auto; 
-		font-size: 16px;
+		border-bottom-left-radius: 0;
+    	border-top-left-radius: 0;
 	}
 
 	#flickr-options{	
@@ -174,34 +170,27 @@
 <div class="container" id="flickr-options-container">
     <div id="content" class="flickr-options">
 		<div class="row" id="placeInfo">
-			<div class="col-sm">
+			<div class="col">
 				<div class="title" style="font-size: 20px">Flickr Options</div>
 				<div class="content" id="flickr-options">
-					<table>
-						<tr>
-							<td>
-								<textarea rows="3" cols="30" id="tags" placeholder="Enter tags followed by commas.."></textarea>
-							</td>
-						</tr>
-						<tr>
-							<td>
-								<div>
-									<select id="photo-amount"> 
-										<option value="15" disabled selected>Choose amount of photos</option>
-										<option value="5">5</option>
-										<option value="10">10</option>
-										<option value="25">25</option>
-										<option value="50">50</option>
-									</select>
-								</div>
-							</td>
-						</tr>
-						<tr>
-							<td>
-								<button id="update" type="button" onclick="fetchNewPhotos()" class="button-update">Load New Photos</button>
-							</td>
-						</tr>
-					</table>
+					<div class="col-3"></div>
+					<div class="col-6">
+						<select id="photo-amount" class="form-control"> 
+							<option value="15" disabled selected>Choose amount of photos</option>
+							<option value="5">5</option>
+							<option value="10">10</option>
+							<option value="25">25</option>
+							<option value="50">50</option>
+						</select>
+						<br/>
+						<div class="input-group">
+							<input type="text" class="form-control" id="tags" placeholder="Enter tags followed by commas...">
+							<span class="input-group-btn">
+								<button id="update" type="button" class="btn btn-secondary button-update" onclick="fetchNewPhotos()">Load New Photos</button>
+							</span>
+						</div>
+					</div>
+					<div class="col-3"></div>
 				</div>
 			</div>
 		</div>
