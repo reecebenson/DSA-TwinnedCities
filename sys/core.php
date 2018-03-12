@@ -48,4 +48,12 @@
 	 * Define our website URL variable (which is accessible to every file)
 	 */
 	$www  = "http://uwe.reecebenson.me/dsa-twincities";
+
+	/**
+	 * Default City Data
+	 */
+	$cities = array(
+		"city_one" => $site->getCityData("28218"),
+		"city_two" => $site->getCityData("2442047")
+	);
 ?>

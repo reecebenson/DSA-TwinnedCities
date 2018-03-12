@@ -18,7 +18,7 @@
 	/**
 	 * Requirements
 	 */
-	require_once('sys/core.php');
+    require_once('sys/core.php');
 ?>
 <!DOCTYPE html>
 <html>

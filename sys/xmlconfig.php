@@ -68,6 +68,10 @@
     );
     $cityDetails = $cityConcatenate;
     
+    // Remove POI
+    unset($cityDetails['city'][0]['poi']);
+    unset($cityDetails['city'][1]['poi']);
+
     // Delete old elements
     unset($cityDetails['city']['city_one']);
     unset($cityDetails['city']['city_two']);
