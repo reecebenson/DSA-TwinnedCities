@@ -105,9 +105,6 @@
             <?php
                 $cityOneData = json_encode($site->getCityData($cities['city_one']['woeid']));
                 $cityTwoData = json_encode($site->getCityData($cities['city_two']['woeid']));
-
-                /*$cityOneData = json_encode($cities['city_one']);
-                $cityTwoData = json_encode($cities['city_two']);*/
             ?>
             let cityOne = <?=($cityOneData!=null ? $cityOneData : "{}");?>;
             let cityTwo = <?=($cityTwoData!=null ? $cityTwoData : "{}");?>;
