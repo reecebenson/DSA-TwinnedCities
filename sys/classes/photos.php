@@ -37,8 +37,6 @@
 	$city_photos_two = constructPhotos($results, $flickr, $cities['city_two']['woeid']);
 	cachePhotos($city_photos_two);
 
-	echo("Photos all good");
-
 	/**
 	 * Searches for photos based on city and defined parameters
 	 *

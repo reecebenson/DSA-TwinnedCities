@@ -65,7 +65,7 @@
 			$.ajax({
 				method: 'POST',
 				dataType: 'json',
-				url: '__DIR__/../sys/classes/photos.php',
+				url: 'http://uwe.reecebenson.me/dsa-twincities/sys/classes/photos.php',
 				timeout:300000000,
 				cache: false,
 
@@ -132,6 +132,8 @@
 		</ol>
 		<div class="carousel-inner">
 			<?php
+
+				var_dump($photos[$woeid]);
 				/**
 				 * Loop through available photos
 				 */
@@ -163,25 +165,3 @@
 	</div>
 </div>
 
-<script type="text/javascript">
-		function fetchNewPhotos() {
-
-			$.ajax({
-				method: 'POST',
-				dataType: 'json',
-				beforeSend
-				url: '__DIR__/../sys/classes/photos.php',
-				timeout:300000000,
-				
-				error: () =>{
-					console.log("Photos not good");
-				},
-
-				success: (result) =>{
-					console.log("All is good");
-				}
-
-			});
-
-		}
-</script>
