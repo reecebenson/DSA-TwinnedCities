@@ -21,6 +21,7 @@
     $woeid = $_POST['woeid'];
     $latitude = $_POST['latitude'];
     $longitude = $_POST['longitude'];
+    $city = $site->getCityData($woeid);
 
     /**
      * Check for errors
@@ -65,8 +66,16 @@
     /**
      * Set our dates for sunrise/sunset
      */
+    // Set Timezone to requested city
+    $defaultTimezone = date_default_timezone_get();
+    date_default_timezone_set($city['timezone']);
+
+    // Update Variables
     $weather['sunrise'] =  date("H:i:sa", $weather['sys']['sunrise']);
     $weather['sunset'] =  date("H:i:sa", $weather['sys']['sunset']);
+
+    // Reset Timezone back to default
+    date_default_timezone_set($defaultTimezone);
 
     /**
      * Data to send back

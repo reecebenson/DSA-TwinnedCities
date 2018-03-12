@@ -32,11 +32,11 @@
 	 * 
 	 * @throws If Error - kills the web page and displays the MySQL Error
 	 */
-	$db = new PDO("mysql:dbname=" . $db_details['name'] . ";host=" . $db_details['host'], $db_details['user'], $db_details['pass']);
-	//$db = new MySQLi($db_details['host'], $db_details['user'], $db_details['pass'], $db_details['name']);
-	if(!$db)
-	{
-		die('Error connecting to database: ' . mysqli_error());
+	$db = null;
+	try {
+		$db = new PDO("mysql:dbname=" . $db_details['name'] . ";host=" . $db_details['host'], $db_details['user'], $db_details['pass']);
+	} catch(PDOException $e) {
+		die('Error connecting to database: ' . $e->getMessage());
 	}
 
 	/**
