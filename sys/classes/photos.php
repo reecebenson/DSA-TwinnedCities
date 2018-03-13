@@ -14,7 +14,6 @@
 
 	require_once(__DIR__.'/phpFlickr/phpFlickr.php');
 	require_once(__DIR__.'/../../sys/configuration.php');
-	require_once(__DIR__.'/../../sys/core.php');
 
 	/**
 	 * Generates random tags for the flickr search from a small pool of tags
