@@ -14,6 +14,7 @@
 	 * Requirements
 	 */
 
+
 	require_once('../sys/core.php');
 
 	// Only call with ajax
@@ -25,6 +26,8 @@
 
 	if(!isset($_REQUEST['woeid']))
 		die('Unable to load data. WOE ID was not received.');
+
+
 
 	/**
 	 * Get our city data from WOE ID
@@ -44,16 +47,45 @@
 
 
 	function getPhotosFromDB($cityID){
+
 		global $db;
 
 		$statement = $db->prepare("SELECT * FROM `images` WHERE `city_id` = ?");
 		$statement->bindParam(1, $cityID);
-
+		
 		$statement->execute();
 
 		$city_photos = $statement->fetchAll(PDO::FETCH_ASSOC);
 
 		return $city_photos;
+
+	}
+
+	function displayPhotos($photos, $woeid){
+		/**
+		 * Loop through available photos
+		 */
+		if(empty($photos[$woeid])){
+			echo("<h1>NO PHOTOS LOADED</h1>");
+		} else {
+			
+			for($i = 0; $i < 20; $i++) {
+				// Get our photo
+				$photo = $photos[$woeid][$i];
+				
+				// Display
+				echo '<div class="carousel-item ' . ($i == 0?"active":"") .'">';
+				echo '<img class="d-block w-100" src="' . $photo["source"] . '" alt="' . $photo["title"] . '">';
+				echo '<div class="carousel-caption d-none d-md-block carousel-backdrop">';
+				echo '<h5>' . $photo["title"] . ' </h5>';
+				echo '<p>'. $photo["desc"] . '</p>';
+				echo '<p>Date Taken: '. $photo['date_taken'] . '</p>';
+				echo '<p><a target="_blank" href="' . $photo["user_url"] . '">View Photo on Flickr</a></p>';
+				echo '</div>';
+				echo '</div>';
+
+			}
+		}
 	}
 ?>
 <head>
@@ -62,24 +94,46 @@
 	<script type="text/javascript">
 		function fetchNewPhotos() {
 
+			var flickrChangeContent = $('#flickr-options-container').html();
+			var searchTags = document.getElementById("tags").value;
+			var amountOfPhotos = $('#dropDownId :selected').text();
+
+			searchTags = searchTags.replace(/\s/g, '');
+            
 			$.ajax({
-				method: 'POST',
-				dataType: 'json',
-				url: 'http://uwe.reecebenson.me/dsa-twincities/sys/classes/photos.php',
-				timeout:300000000,
-				cache: false,
-
-				error: () =>{
-					console.log("Not Working");
+                method: 'POST',
+                url: '<?=$www;?>/sys/classes/photos.php',
+				data: {
+					tags : searchTags,
+					photoAmount: amountOfPhotos,
 				},
+                timeout: 300000000,
+                cache: false,
 
-				success: (result) =>{
-					console.log("All is good");
-				}
+                beforeSend: function() {
+                    $('#flickr-options').html("<div style='display:table-cell; vertical-align:middle; text-align:center'><table><tr><td><h2>Refreshing Photos</h2></td></tr><tr><td><img src='<?=$www;?>/gallery/img/load.gif'></td></tr</img></div>");
+                    console.log("Caching new photos");
+                    
+                },
+                error: () =>{
+                    console.log("Did not finish caching");
+                },
 
-			});
+                success: (result) =>{
+                    $('#flickr-options-container').html(flickrChangeContent);
+					console.log("Complete");
+						if(currentCity == null) return;
+						executeCity(currentCity.woeid, currentCity.lat, currentCity.long, "flickr");
+						currentPage = "flickr";
+						removeActiveButtons();
+					
+                }
+
+            });
 
 		}
+
+
 	</script>
 
 </head>
@@ -92,31 +146,51 @@
 	}
 
 	.button-update{
-		height: 52px;
-		text-align: center;
-		text-decoration: none;
-		display: inline-block;
-		font-size: 16px;
+		border-bottom-left-radius: 0;
+    	border-top-left-radius: 0;
 	}
 
 	#flickr-options{	
 		height: 10em;
+		margin:0 auto; 
 		display: flex;
 		align-items: center;
-		justify-content: center }
+		justify-content: center
 	}
 
+	select {
+		display: block;
+		margin: 0 auto;
+	}
+
+
+
 </style>
-<div class="container">
-	<div id="content">
+
+<div class="container" id="flickr-options-container">
+    <div id="content" class="flickr-options">
 		<div class="row" id="placeInfo">
-			<div class="col-sm">
+			<div class="col">
 				<div class="title" style="font-size: 20px">Flickr Options</div>
 				<div class="content" id="flickr-options">
-					<table>
-						<tr><td><textarea rows="3" cols="30" placeholder="Enter tags followed by commas.."></textarea></td>
-						<td><button id="update" type="button" onclick="fetchNewPhotos()" class="button-update">Load New Photos</button></td></tr>
-					</table>
+					<div class="col-3"></div>
+					<div class="col-6">
+						<select id="photo-amount" class="form-control"> 
+							<option value="15" disabled selected>Choose amount of photos</option>
+							<option value="5">5</option>
+							<option value="10">10</option>
+							<option value="25">25</option>
+							<option value="50">50</option>
+						</select>
+						<br/>
+						<div class="input-group">
+							<input type="text" class="form-control" id="tags" placeholder="Enter tags followed by commas...">
+							<span class="input-group-btn">
+								<button id="update" type="button" class="btn btn-secondary button-update" onclick="fetchNewPhotos()">Load New Photos</button>
+							</span>
+						</div>
+					</div>
+					<div class="col-3"></div>
 				</div>
 			</div>
 		</div>
@@ -130,28 +204,9 @@
 			<li data-target="#carouselIndicator" data-slide-to="<?=$i;?>"></li>
 			<?php } ?>
 		</ol>
-		<div class="carousel-inner">
+		<div class="carousel-inner" id="photo-reel">
 			<?php
-
-				var_dump($photos[$woeid]);
-				/**
-				 * Loop through available photos
-				 */
-				for($i = 0; $i < 20; $i++) {
-					// Get our photo
-					$photo = $photos[$woeid][$i];
-					
-					// Display
-					echo '<div class="carousel-item ' . ($i == 0?"active":"") .'">';
-					echo '<img class="d-block w-100" src="' . $photo["source"] . '" alt="' . $photo["title"] . '">';
-					echo '<div class="carousel-caption d-none d-md-block carousel-backdrop">';
-					echo '<h5>' . $photo["title"] . ' </h5>';
-					echo '<p>'. $photo["desc"] . '</p>';
-					echo '<p>Date Taken: '. $photo['date_taken'] . '</p>';
-					echo '<p><a target="_blank" href="' . $photo["user_url"] . '">View Photo on Flickr</a></p>';
-					echo '</div>';
-					echo '</div>';
-				}
+				displayPhotos($photos, $woeid);
 			?>
 		</div>
 		<a class="carousel-control-prev" href="#carouselIndicator" role="button" data-slide="prev">
